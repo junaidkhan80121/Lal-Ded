@@ -1,0 +1,11 @@
+.about-img{
+    width:40vw;
+    height:auto;
+}
+
+@media (max-width:768px){
+    .about-img{
+        width: 85vw;
+        height: auto;
+    }
+}

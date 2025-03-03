@@ -1,0 +1,16 @@
+.desc-box-1{
+    height: 100vh;
+    /* background-color: red; */
+    text-align: center;
+    padding-top: 10vh;
+}
+
+.desc-box-2{
+    background-size: cover;
+}
+
+@media (max-height:760px){
+    .desc-box-2{
+        height: 90vh;
+    }
+}
