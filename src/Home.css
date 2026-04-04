@@ -26,13 +26,7 @@
 .hero__overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    180deg,
-    rgba(10, 14, 23, 0.7) 0%,
-    rgba(10, 14, 23, 0.4) 40%,
-    rgba(10, 14, 23, 0.6) 70%,
-    rgba(10, 14, 23, 0.95) 100%
-  );
+  background: var(--hero-overlay);
 }
 
 /* Floating shapes */
@@ -48,7 +42,7 @@
   height: 300px;
   top: 10%;
   right: 5%;
-  background: radial-gradient(circle, rgba(16,185,129,0.08) 0%, transparent 70%);
+  background: transparent;
   animation: float 8s ease-in-out infinite;
 }
 
@@ -57,7 +51,7 @@
   height: 200px;
   bottom: 20%;
   left: 5%;
-  background: radial-gradient(circle, rgba(245,158,11,0.06) 0%, transparent 70%);
+  background: transparent;
   animation: float 10s ease-in-out infinite 2s;
 }
 
@@ -66,7 +60,7 @@
   height: 150px;
   top: 30%;
   left: 20%;
-  background: radial-gradient(circle, rgba(16,185,129,0.05) 0%, transparent 70%);
+  background: transparent;
   animation: float 12s ease-in-out infinite 4s;
 }
 
@@ -91,7 +85,7 @@
 }
 
 .hero__title-accent {
-  background: linear-gradient(135deg, var(--accent-emerald-light) 0%, var(--accent-saffron-light) 100%);
+  background: var(--hero-overlay);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -134,7 +128,7 @@
   display: block;
   font-size: 1.3rem;
   font-weight: 800;
-  color: var(--accent-emerald-light);
+  color: var(--accent-primary);
 }
 
 .hero__badge-label {
@@ -249,7 +243,7 @@
   font-size: 0.75rem;
   font-weight: 700;
   color: #fff;
-  background: var(--gradient-primary);
+  background: var(--accent-primary);
   border-radius: var(--radius-full);
   letter-spacing: 0.5px;
   text-transform: uppercase;
@@ -295,7 +289,7 @@
 .pkg-card__price {
   font-size: 1.1rem;
   font-weight: 800;
-  color: var(--accent-emerald-light);
+  color: var(--accent-primary);
 }
 
 /* ── Stats ── */
@@ -312,7 +306,7 @@
   transform: translate(-50%, -50%);
   width: 600px;
   height: 300px;
-  background: radial-gradient(ellipse, rgba(16,185,129,0.08) 0%, transparent 70%);
+  background: transparent;
   pointer-events: none;
 }
 
@@ -321,7 +315,7 @@
   grid-template-columns: repeat(4, 1fr);
   gap: var(--space-xl);
   padding: var(--space-2xl) var(--space-3xl);
-  background: var(--gradient-card);
+  background: var(--bg-card);
   backdrop-filter: blur(12px);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-xl);
@@ -335,7 +329,7 @@
   display: block;
   font-size: clamp(2rem, 3.5vw, 3rem);
   font-weight: 800;
-  color: var(--accent-emerald-light);
+  color: var(--accent-primary);
   line-height: 1.2;
 }
 
@@ -405,8 +399,8 @@
   width: 64px;
   height: 64px;
   border-radius: var(--radius-lg);
-  background: rgba(16, 185, 129, 0.1);
-  color: var(--accent-emerald-light);
+  background: rgba(2, 132, 199, 0.1);
+  color: var(--accent-primary);
   margin-bottom: var(--space-lg);
 }
 
@@ -448,12 +442,7 @@
 .cta-banner__overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    135deg,
-    rgba(10, 14, 23, 0.9) 0%,
-    rgba(10, 14, 23, 0.7) 50%,
-    rgba(10, 14, 23, 0.85) 100%
-  );
+  background: var(--hero-overlay);
 }
 
 .cta-banner__content {

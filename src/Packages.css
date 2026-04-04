@@ -26,12 +26,7 @@
 .packages-hero__overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    180deg,
-    rgba(10, 14, 23, 0.75) 0%,
-    rgba(10, 14, 23, 0.5) 50%,
-    rgba(10, 14, 23, 0.95) 100%
-  );
+  background: var(--hero-overlay);
 }
 
 .packages-hero__content {
@@ -89,7 +84,7 @@
 
 .packages-filter-btn--active {
   color: #fff;
-  background: var(--gradient-primary);
+  background: var(--accent-primary);
   border-color: transparent;
   box-shadow: var(--shadow-glow);
 }
@@ -134,7 +129,7 @@
   font-size: 0.75rem;
   font-weight: 700;
   color: var(--bg-primary);
-  background: var(--gradient-saffron);
+  background: var(--accent-primary);
   border-radius: var(--radius-full);
   letter-spacing: 0.5px;
 }
@@ -229,7 +224,7 @@
 .pkg-card-full__price {
   font-size: 1.5rem;
   font-weight: 800;
-  color: var(--accent-emerald-light);
+  color: var(--accent-primary);
   line-height: 1.2;
 }
 

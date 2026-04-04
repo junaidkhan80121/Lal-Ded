@@ -68,7 +68,7 @@
 }
 
 .navbar__link--active {
-  color: var(--accent-emerald-light);
+  color: var(--accent-primary);
 }
 
 .navbar__link-indicator {
@@ -78,7 +78,7 @@
   transform: translateX(-50%) scaleX(0);
   width: 20px;
   height: 2px;
-  background: var(--gradient-accent);
+  background: var(--accent-primary);
   border-radius: var(--radius-full);
   transition: transform var(--transition-medium);
 }
@@ -167,7 +167,7 @@
 
 .navbar__drawer-link:hover,
 .navbar__drawer-link--active {
-  color: var(--accent-emerald-light);
+  color: var(--accent-primary);
   padding-left: var(--space-md);
 }
 
