@@ -26,7 +26,7 @@
 .packages-hero__overlay {
   position: absolute;
   inset: 0;
-  background: var(--hero-overlay);
+  background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.7) 100%);
 }
 
 .packages-hero__content {
@@ -46,7 +46,7 @@
 
 .packages-hero__subtitle {
   font-size: clamp(1rem, 1.3vw, 1.15rem);
-  color: rgba(255, 255, 255, 0.65);
+  color: rgba(255, 255, 255, 0.8);
   max-width: 550px;
   margin: 0 auto;
   line-height: 1.7;
@@ -55,6 +55,7 @@
 /* Filters */
 .packages-main {
   padding: var(--space-4xl) 0;
+  background: var(--surface-container-low);
 }
 
 .packages-filters {
@@ -70,21 +71,21 @@
   font-size: 0.9rem;
   font-weight: 600;
   color: var(--text-secondary);
-  background: transparent;
-  border: 1.5px solid var(--border-medium);
+  background: var(--surface-container-lowest);
+  border: 1.5px solid var(--border-subtle);
   border-radius: var(--radius-full);
   cursor: pointer;
   transition: all var(--transition-medium);
 }
 
 .packages-filter-btn:hover {
-  color: var(--text-primary);
-  border-color: var(--text-muted);
+  color: var(--primary);
+  border-color: var(--primary);
 }
 
 .packages-filter-btn--active {
   color: #fff;
-  background: var(--accent-primary);
+  background: var(--primary);
   border-color: transparent;
   box-shadow: var(--shadow-glow);
 }

@@ -1,7 +1,7 @@
 /* ===== Footer ===== */
 .footer {
   position: relative;
-  background: var(--bg-secondary);
+  background: var(--surface-container-low);
   border-top: 1px solid var(--border-subtle);
   padding: var(--space-4xl) 0 var(--space-xl);
   margin-top: var(--space-4xl);
@@ -38,15 +38,17 @@
   height: 42px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid var(--border-accent);
+  border: 2px solid var(--primary);
 }
 
 .footer__logo-text {
   font-size: 1.4rem;
+  color: var(--primary);
+  font-weight: 700;
 }
 
 .footer__description {
-  color: var(--text-muted);
+  color: var(--text-secondary);
   font-size: 0.9rem;
   line-height: 1.7;
   margin-bottom: var(--space-xl);
