@@ -19,7 +19,7 @@
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border-subtle);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-ambient);
 
   /* Scrolled state: Navbar adapts to the current theme */
   --nav-text: var(--text-secondary);
@@ -46,11 +46,13 @@
   height: 42px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid var(--border-accent);
+  border: 2px solid var(--primary);
 }
 
 .navbar__logo-text {
   font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--primary);
 }
 
 /* Desktop Links */
@@ -76,7 +78,7 @@
 }
 
 .navbar__link--active {
-  color: var(--accent-primary);
+  color: var(--primary);
 }
 
 .navbar__link-indicator {
@@ -86,7 +88,7 @@
   transform: translateX(-50%) scaleX(0);
   width: 20px;
   height: 2px;
-  background: var(--accent-primary);
+  background: var(--primary);
   border-radius: var(--radius-full);
   transition: transform var(--transition-medium);
 }
@@ -150,7 +152,7 @@
 }
 
 .navbar__theme-toggle:hover {
-  color: var(--accent-primary);
+  color: var(--primary);
 }
 
 /* Mobile Drawer */
@@ -190,7 +192,7 @@
 
 .navbar__drawer-link:hover,
 .navbar__drawer-link--active {
-  color: var(--accent-primary);
+  color: var(--primary);
   padding-left: var(--space-md);
 }
 
