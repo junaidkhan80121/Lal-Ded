@@ -1,59 +1,94 @@
-import { AppBar, Toolbar, Typography, Box, Menu, MenuItem, IconButton, Button } from '@mui/material';
-import { React, useState } from 'react';
-import "./css/navbar.css";
-import "../text.css";
-import { Link } from 'react-router-dom';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import HomeIcon from '@mui/icons-material/Home';
-import InfoIcon from '@mui/icons-material/Info';
-import CallIcon from '@mui/icons-material/Call';
+import { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import './Navbar.css';
 
 export default function Navbar() {
-  const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
+  const [isOpen, setIsOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const location = useLocation();
 
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 40);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+  useEffect(() => {
+    setIsOpen(false);
+  }, [location]);
 
+  useEffect(() => {
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [isOpen]);
+
+  const navLinks = [
+    { path: '/', label: 'Home' },
+    { path: '/packages', label: 'Packages' },
+    { path: '/about', label: 'About' },
+    { path: '/contact', label: 'Contact' },
+  ];
 
   return (
-    <AppBar elevation={0} position="fixed" sx={{ backgroundColor: "#e7f0ff" }}>
-      <Toolbar>
-        <Box sx={{display:"flex",alignItems:"center"}}>
-          <Link to='/'><img className="logo-img" src="/logo.png" alt="logo" /></Link>
-          <Link to='/'><Typography className='logo'><b>Lal Ded</b></Typography></Link>
-        </Box>
-        <Box sx={{ marginLeft: "auto", display: { xs: "none", sm:"none", md:"flex",lg: "flex" } }}>
-          <ul>
-          <Link className="nav-links text-1" style={{ fontWeight: "700", fontSize:"1.1vw" }} to="/">Home</Link>
-          <Link className="nav-links text-1" style={{ fontWeight: "700", fontSize:"1.1vw" }} to="/contact">Contact Us</Link>
-          <Link className="nav-links text-1" style={{ fontWeight: "700", fontSize:"1.1vw" }} to="/about">About Us</Link>
+    <nav className={`navbar ${scrolled ? 'navbar--scrolled' : ''}`} id="main-nav">
+      <div className="navbar__inner container">
+        <Link to="/" className="navbar__brand" id="nav-logo">
+          <img className="navbar__logo-img" src="/logo.png" alt="Lal Ded logo" />
+          <span className="navbar__logo-text logo-text">Lal Ded</span>
+        </Link>
 
-          </ul>
-        </Box>
-        <Box sx={{ display: { md:"none", lg: "none", marginLeft: "auto" } }}>
-          <IconButton onClick={handleClick} edge="end" color="inherit" aria-label="menu">
-            <MoreVertIcon sx={{color:"black"}}/>
-          </IconButton>
-          <Menu
-            id="basic-menu"
-            anchorEl={anchorEl}
-            open={open}
-            onClose={handleClose}
-            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-            transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-          >
-            <MenuItem onClick={()=>handleClose()}><Link style={{display:"flex",alignItems:"center"}} className="nav-links text-1" to='/'><HomeIcon/>&ensp;Home</Link></MenuItem>
-            <MenuItem onClick={()=>handleClose()}><Link style={{display:"flex",alignItems:"center"}} className="nav-links text-1" to='/contact'><CallIcon/>&ensp;Contact Us</Link></MenuItem>
-            <MenuItem onClick={()=>handleClose()}><Link style={{display:"flex",alignItems:"center"}} className="nav-links text-1" to='/about'><InfoIcon/>&ensp;About Us</Link></MenuItem>
-          </Menu>
-        </Box>
-      </Toolbar>
-    </AppBar>
+        <div className="navbar__links" id="nav-links-desktop">
+          {navLinks.map((link) => (
+            <Link
+              key={link.path}
+              to={link.path}
+              className={`navbar__link ${location.pathname === link.path ? 'navbar__link--active' : ''}`}
+              id={`nav-link-${link.label.toLowerCase()}`}
+            >
+              {link.label}
+              <span className="navbar__link-indicator" />
+            </Link>
+          ))}
+        </div>
+
+        <Link to="/contact" className="navbar__cta btn btn-primary btn-sm" id="nav-cta-book">
+          Book Now
+        </Link>
+
+        <button
+          className={`navbar__hamburger ${isOpen ? 'navbar__hamburger--active' : ''}`}
+          onClick={() => setIsOpen(!isOpen)}
+          aria-label="Toggle menu"
+          id="nav-hamburger"
+        >
+          <span />
+          <span />
+          <span />
+        </button>
+      </div>
+
+      {/* Mobile Drawer */}
+      <div className={`navbar__drawer ${isOpen ? 'navbar__drawer--open' : ''}`} id="nav-mobile-drawer">
+        <div className="navbar__drawer-content">
+          {navLinks.map((link, i) => (
+            <Link
+              key={link.path}
+              to={link.path}
+              className={`navbar__drawer-link ${location.pathname === link.path ? 'navbar__drawer-link--active' : ''}`}
+              style={{ animationDelay: `${0.1 + i * 0.08}s` }}
+              id={`nav-mobile-link-${link.label.toLowerCase()}`}
+            >
+              {link.label}
+            </Link>
+          ))}
+          <Link to="/contact" className="btn btn-primary navbar__drawer-cta" id="nav-mobile-cta">
+            Book Now
+          </Link>
+        </div>
+      </div>
+      {isOpen && <div className="navbar__overlay" onClick={() => setIsOpen(false)} />}
+    </nav>
   );
 }

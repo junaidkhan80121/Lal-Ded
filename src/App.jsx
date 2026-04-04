@@ -1,38 +1,36 @@
-import './App.css'
-import Navbar from './components/navbar'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import Home from './Home'
-import Contact from './Contact'
-import About from './About'
-import { createTheme, ThemeProvider } from '@mui/material'
-import Footer from './components/Footer'
-const theme = createTheme({
-  palette:{
-    primary:{
-      main:"#6d62ff"
-    },
-  }
-})
+import './index.css';
+import './text.css';
+import Navbar from './components/navbar';
+import Footer from './components/Footer';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
+import Home from './Home';
+import Contact from './Contact';
+import About from './About';
+import Packages from './Packages';
 
-function App() {
- 
-
-  return (
-    <>
-      <Router>
-        <ThemeProvider theme={theme}>
-        <Navbar/>
-        <Routes>
-          <Route path='/' element={<Home/>}/>
-          <Route path='/contact' element={<Contact/>}/>
-          <Route path='/about' element={<About/>}/>
-        </Routes>
-        <Footer/>
-        </ThemeProvider>
-      </Router>
-      
-    </>
-  )
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
 }
 
-export default App
+function App() {
+  return (
+    <Router>
+      <ScrollToTop />
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/packages" element={<Packages />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/about" element={<About />} />
+      </Routes>
+      <Footer />
+    </Router>
+  );
+}
+
+export default App;

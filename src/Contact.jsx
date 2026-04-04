@@ -1,98 +1,218 @@
-import React, { useState } from 'react'
-import Grid from '@mui/material/Grid2'
-import { Typography, Box, Card, TextField, Button } from '@mui/material'
-import './text.css';
-import MailIcon from '@mui/icons-material/Mail';
-import PhoneIcon from '@mui/icons-material/Phone';
-import './components/css/Contact.css';
-import axios from 'axios'
+import { useState, useEffect } from 'react';
+import { TextField, Button } from '@mui/material';
+import axios from 'axios';
+import './Contact.css';
 
 export default function Contact() {
-    const [fname, setFName] = useState("");
-    const [lname, setLName] = useState("");
-    const [email, setEmail] = useState("");
-    const [phone, setPhone] = useState("");
-    const [desc, setDesc] = useState("");
+  const [fname, setFName] = useState('');
+  const [lname, setLName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [desc, setDesc] = useState('');
+  const [submitted, setSubmitted] = useState(false);
 
-    const handleForm = async(e)=>{
-        e.preventDefault();
-        try{
-            const response = await axios.post("http://localhost:8000/queries",
-            {
-                "fname":fname,
-                "lname":lname,
-                "email": email,
-                "phone": phone,
-                "query":desc
-            },
-            {
-                headers:{secret:import.meta.env.VITE_SECRET},
-            }
-        )
-            console.log(response.data);
-        }
-        catch(err){
-            console.log("err: ",err);
-        }
-
-
-
+  const handleForm = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        'http://localhost:8000/queries',
+        { fname, lname, email, phone, query: desc },
+        { headers: { secret: import.meta.env.VITE_SECRET } }
+      );
+      console.log(response.data);
+      setSubmitted(true);
+      setFName(''); setLName(''); setEmail(''); setPhone(''); setDesc('');
+      setTimeout(() => setSubmitted(false), 4000);
+    } catch (err) {
+      console.log('err: ', err);
     }
+  };
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) entry.target.classList.add('in-view');
+        });
+      },
+      { threshold: 0.15 }
+    );
+    document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <>
-        <Box sx={{backgroundImage:"url('/assets/contact-bg.jpg')",marginTop:"10vh",height:{xs:"85vh",sm:"85",md:"85vh",lg:"85vh"},backgroundSize:"cover",display:"flex",justifyContent:"center",alignItems:"center",flexDirection:"column"}}>
-            <Typography className="text-2" sx={{color:"white",fontWeight:"600",fontSize:{xs:"8vw",lg:"3vw",marginBottom:"0vh"}}}>Contact Us</Typography>
-            <a href="#contact"><Button variant="contained" color='primary' size='medium'>Contact Us</Button></a>
-        </Box>
-        <Grid container sx={{marginTop:"5vh"}}>
-            <Grid size={{xs:12,sm:12,md:6,lg:6}}>
-                <Box id="contact" sx={{height:{xs:"60vh",sm:"85vh",md:"100vh",lg:"80vh"},padding:{xs:"8vw",sm:"5vw",md:"5vw 0 5vw 3vw",lg:"5vw"}}}>
-                    <Typography sx={{fontSize:{xs:"12vw",sm:"6vw",md:"4vw",lg:"5vw"},fontWeight:"700"}} className='text-1'>Contact Us</Typography>
-                    <Typography className='text-2' sx={{mt:{xs:2},color:"gray",fontSize:{xs:"4vw",sm:"2.5vw",md:"2vw",lg:"1.2vw"}}}>Ready to plan your dream adventure? Whether you have a quick question, need personalized travel advice, or want to start crafting your itinerary, we're here to help. Email, call, or complete the form below to discover how we can solve your travel planning needs.</Typography>
-                    <Typography className='text-3' sx={{mt:{xs:6},fontSize:{xs:"4vw",sm:"3vw",md:"2vw",lg:"1.1vw"}}}><a style={{display:"flex",alignItems:"center",color:"black",textDecoration:"none"}} className='text-3' href="mailto:ahsanamin1994@gmail.com"><MailIcon sx={{fontSize:{xs:"4vw",sm:"3vw",md:"2vw",lg:"1.3vw"}}}/>&ensp;AhsanAmin1994@gmail.com</a></Typography>
-                    <Typography className='text-3' sx={{mt:{xs:1},fontSize:{xs:"4vw",sm:"3vw",md:"2vw",lg:"1.1vw"}}}><a style={{display:"flex",alignItems:"center",color:"black",textDecoration:"none"}} className='text-3' href="tel:+917006267930"><PhoneIcon sx={{fontSize:{xs:"4vw",sm:"3vw",md:"2vw",lg:"1.3vw"}}}/>&ensp;+917006267930</a></Typography>
-                    <Box sx={{display:"flex",justifyContent:"space-between",mt:{xs:"5vw"},padding:{xs:"0vw"}}}>
-                    <Box sx={{mx:{lg:2,xs:"2vw"},mt:{xs:"3vh"}}}>
-                        <Typography className='text-2' sx={{textAlign:"center",fontSize:{xs:"4vw",md:"2.5vw",lg:"1.5vw"},fontWeight:"500"}}>Customer Support</Typography>
-                        <Typography sx={{margin:{},textAlign:"center",fontSize:{xs:"2.7vw",md:"1.5vw",lg:"1vw"}}}>Our support team is available around the clock to address any concerns or queries you ma have.</Typography>
-                    </Box>
-                    <Box sx={{mx:{lg:2,xs:"2vw"},mt:{xs:"3vh"}}}>
-                        <Typography className='text-2' sx={{textAlign:"center",fontSize:{xs:"4vw",md:"2.5vw",lg:"1.5vw"},fontWeight:"500"}}>Feedback & Queries</Typography>
-                        <Typography sx={{margin:{},textAlign:"center",fontSize:{xs:"3vw",md:"1.5vw",lg:"1vw"}}}>Our support team is available around the clock to address any concerns or queries you ma have.</Typography>
-                    </Box>
-                </Box>
-                </Box>
-            </Grid>
-            <Grid size={{xs:12,sm:12,md:6,lg:6}}>
-                <Box sx={{padding:"4vw",mt:{xs:5}}}>
-                    <Card sx={{p:4,borderRadius:"5%",height:{lg:"80vh"}}}>
-                        <Typography sx={{fontSize:{xs:"7vw",lg:"2.5vw"},fontWeight:"700",mb:1}} className='text-1'>Get in Touch</Typography>
-                        <Typography sx={{fontSize:{xs:"4vw",lg:"1vw"},fontWeight:"700",mb:1}} className='text-1'>You can reach us anytime</Typography>
-                        <form onSubmit={handleForm}>
-                            <TextField label='First Name' size='medium' sx={{p:1,mb:1,borderRadius:"50%"}} required="required" onChange={(e)=>setFName(e.target.value)}/>
-                            <TextField label='Last Name' size='medium' sx={{p:1}} onChange={(e)=>setLName(e.target.value)} />
-                            <TextField size='medium' sx={{p:1}} placeholder='Email' label='Email' fullWidth onChange={(e)=>setEmail(e.target.value)} />
-                            <TextField size='medium' sx={{p:1}} label='Phone Number' type='number' required='required' fullWidth onChange={(e)=>setPhone(e.target.value)} />
-                            <TextField size='large' sx={{p:1,mb:3}} rows={4} multiline label='How Can We Help?' required="required" fullWidth onChange={(e)=>setDesc(e.target.value)} />
-                            <Button type='submit' variant='contained' color='primary' size='large' fullWidth>Submit</Button>                            
-                        </form>
-                    </Card>
-                </Box>
-            </Grid>
-            <Grid size={{xs:12,sm:12,md:12,lg:6}} sx={{height:{lg:"90vh"}}}>
-                <Box sx={{padding:"2vw",display:"flex",justifyContent:"center",alignItems:"center"}}>
-                    <iframe className='maps' src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3303.598390383595!2d74.77057207486054!3d34.10542741492173!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38e19b996ef3bb6b%3A0xf48e1bff2e9d4dd!2sNoorbagh%20location!5e0!3m2!1sen!2sin!4v1740635509212!5m2!1sen!2sin"></iframe>
-                </Box>
-            </Grid>
-            <Grid size={{xs:12,sm:12,md:6,lg:6}}>
-                <Box sx={{padding:{xs:"5vw"},mt:{xs:"5vh"}}}>
-                    <Typography className='text-1' sx={{fontSize:{xs:"5vw",lg:"2vw"},fontWeight:"600"}}>Our Location</Typography>
-                    <Typography className='text-1' sx={{fontSize:{xs:"6vw",sm:"3vw",md:"2vw",lg:"2.5vw"},fontWeight:"600"}}>Connecting Near and Far</Typography><br/>
-                    <Typography className='text-2' sx={{mt:{xs:2},fontSize:{xs:"6vw",lg:"2vw"},fontWeight:"500"}}>Office</Typography>
-                    <Typography className='text-3' sx={{fontSize:{xs:"4vw",sm:"3vw",lg:"1.3vw"},color:"gray"}}>Lal Ded Tour and Travels, <br/>Bhagwanpora, Noorbagh,<br/>Near Hosptal Doad <br/>Srinagar, 190001, <br/>Jammu & Kashmir.</Typography>
-                </Box>
-            </Grid>
-        </Grid>
-    </>
-  )
+    <main className="contact-page" id="contact-page">
+      {/* Hero */}
+      <section className="contact-hero" id="contact-hero">
+        <div className="contact-hero__bg">
+          <img src="/assets/contact-bg.jpg" alt="Kashmir" className="contact-hero__bg-img" />
+          <div className="contact-hero__overlay" />
+        </div>
+        <div className="contact-hero__content container">
+          <span className="section-label animate-fade-in-up delay-1">✦ Get in Touch</span>
+          <h1 className="contact-hero__title heading-display animate-fade-in-up delay-2">
+            Let's Plan Your<br /><span className="hero__title-accent">Dream Journey</span>
+          </h1>
+          <p className="contact-hero__subtitle animate-fade-in-up delay-3">
+            Have a question or ready to book? We're here to help you every step of the way.
+          </p>
+        </div>
+      </section>
+
+      {/* Contact Content */}
+      <section className="contact-content reveal" id="contact-content">
+        <div className="container">
+          <div className="contact-grid">
+            {/* Left — Info */}
+            <div className="contact-info">
+              <span className="section-label">✦ Contact Information</span>
+              <h2 className="section-title">Ready to Explore?<br/>Reach Out Today</h2>
+              <p className="contact-info__desc">
+                Whether you have a quick question, need personalized travel advice, or want to
+                start crafting your itinerary — we're here to help.
+              </p>
+
+              <div className="contact-info__cards">
+                <a href="mailto:ahsanamin1994@gmail.com" className="contact-info__card glass-card" id="contact-email-card">
+                  <div className="contact-info__card-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                  </div>
+                  <div>
+                    <h4 className="contact-info__card-title">Email Us</h4>
+                    <p className="contact-info__card-value">AhsanAmin1994@gmail.com</p>
+                  </div>
+                </a>
+
+                <a href="tel:+917006267930" className="contact-info__card glass-card" id="contact-phone-card">
+                  <div className="contact-info__card-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                  </div>
+                  <div>
+                    <h4 className="contact-info__card-title">Call Us</h4>
+                    <p className="contact-info__card-value">+91 7006267930</p>
+                  </div>
+                </a>
+
+                <div className="contact-info__card glass-card" id="contact-address-card">
+                  <div className="contact-info__card-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  </div>
+                  <div>
+                    <h4 className="contact-info__card-title">Visit Us</h4>
+                    <p className="contact-info__card-value">Bhagwanpora, Noorbagh,<br/>Near Hospital Road,<br/>Srinagar, J&K — 190001</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="contact-info__support">
+                <div className="contact-info__support-item">
+                  <span className="contact-info__support-icon">🕐</span>
+                  <div>
+                    <h4>24/7 Support</h4>
+                    <p>Our team is available around the clock for any queries.</p>
+                  </div>
+                </div>
+                <div className="contact-info__support-item">
+                  <span className="contact-info__support-icon">⚡</span>
+                  <div>
+                    <h4>Quick Response</h4>
+                    <p>We respond to all inquiries within 2 hours.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right — Form */}
+            <div className="contact-form-wrap glass-card" id="contact-form-section">
+              <h3 className="contact-form__title">
+                Send us a Message
+              </h3>
+              <p className="contact-form__subtitle">Fill out the form and we'll get back to you shortly.</p>
+
+              {submitted && (
+                <div className="contact-form__success">
+                  ✅ Thank you! Your message has been sent successfully.
+                </div>
+              )}
+
+              <form onSubmit={handleForm} className="contact-form" id="contact-form">
+                <div className="contact-form__row">
+                  <TextField
+                    label="First Name"
+                    size="small"
+                    required
+                    fullWidth
+                    value={fname}
+                    onChange={(e) => setFName(e.target.value)}
+                    id="input-fname"
+                  />
+                  <TextField
+                    label="Last Name"
+                    size="small"
+                    fullWidth
+                    value={lname}
+                    onChange={(e) => setLName(e.target.value)}
+                    id="input-lname"
+                  />
+                </div>
+                <TextField
+                  label="Email"
+                  type="email"
+                  size="small"
+                  fullWidth
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  id="input-email"
+                />
+                <TextField
+                  label="Phone Number"
+                  type="tel"
+                  size="small"
+                  required
+                  fullWidth
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  id="input-phone"
+                />
+                <TextField
+                  label="How can we help?"
+                  multiline
+                  rows={4}
+                  size="small"
+                  required
+                  fullWidth
+                  value={desc}
+                  onChange={(e) => setDesc(e.target.value)}
+                  id="input-message"
+                />
+                <button type="submit" className="btn btn-primary contact-form__submit" id="contact-submit-btn">
+                  Send Message
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Map */}
+      <section className="contact-map reveal" id="contact-map">
+        <div className="container">
+          <div className="contact-map__header">
+            <span className="section-label">✦ Find Us</span>
+            <h2 className="section-title">Our Location</h2>
+          </div>
+          <div className="contact-map__wrap glass-card">
+            <iframe
+              className="contact-map__iframe"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3303.598390383595!2d74.77057207486054!3d34.10542741492173!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38e19b996ef3bb6b%3A0xf48e1bff2e9d4dd!2sNoorbagh%20location!5e0!3m2!1sen!2sin!4v1740635509212!5m2!1sen!2sin"
+              title="Lal Ded office location"
+              loading="lazy"
+            />
+          </div>
+        </div>
+      </section>
+    </main>
+  );
 }
