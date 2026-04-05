@@ -139,7 +139,6 @@ export default function Home() {
               <div className="featured__card-content">
                 <div className="featured__card-header">
                   <h3>{featuredPackages[0].name}</h3>
-                  <span className="featured__card-price">{featuredPackages[0].price}</span>
                 </div>
                 <div className="featured__card-meta">
                   <span>🕐 {featuredPackages[0].duration}</span>
@@ -160,7 +159,6 @@ export default function Home() {
                 <h3>{featuredPackages[1].name}</h3>
                 <div className="featured__card-footer">
                   <span>{featuredPackages[1].duration}</span>
-                  <span>{featuredPackages[1].price}</span>
                 </div>
               </div>
             </Link>
@@ -177,7 +175,6 @@ export default function Home() {
                 <h3>{featuredPackages[2].name}</h3>
                 <div className="featured__card-footer">
                   <span>{featuredPackages[2].duration}</span>
-                  <span>{featuredPackages[2].price}</span>
                 </div>
               </div>
             </Link>

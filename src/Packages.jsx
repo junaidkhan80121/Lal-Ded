@@ -166,11 +166,6 @@ export default function Packages() {
                     ))}
                   </ul>
                   <div className="pkg-card-full__footer">
-                    <div className="pkg-card-full__price-block">
-                      <span className="pkg-card-full__price-label">Starting from</span>
-                      <span className="pkg-card-full__price">{pkg.price}</span>
-                      <span className="pkg-card-full__price-note">per person</span>
-                    </div>
                     <Link to="/contact" className="btn btn-primary btn-sm">Book Now</Link>
                   </div>
                 </div>
