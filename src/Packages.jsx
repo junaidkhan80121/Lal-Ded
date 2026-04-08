@@ -305,11 +305,6 @@ export default function Packages() {
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                         {pkg.duration}
                       </span>
-                      <div className="pkg-card-full__price-block">
-                        <span className="pkg-card-full__price-label">Starting from</span>
-                        <span className="pkg-card-full__price">{pkg.price}</span>
-                        <span className="pkg-card-full__price-note">per couple</span>
-                      </div>
                     </div>
                   </div>
                   <ul className="pkg-card-full__highlights">
