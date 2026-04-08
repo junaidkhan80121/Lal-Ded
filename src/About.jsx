@@ -1,4 +1,5 @@
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import './About.css';
 
 const timeline = [
@@ -15,7 +16,22 @@ const values = [
   { icon: '❤️', title: 'Passion', desc: 'We don\'t just show you Kashmir — we share it. Every tour is a labour of love.' },
 ];
 
+const storyHighlights = [
+  { icon: '🧭', title: 'Tailor-made itineraries', desc: 'Trips shaped around your pace, season, and budget.' },
+  { icon: '🏡', title: 'Local-first hospitality', desc: 'Trusted stays, drivers, and hosts across the valley.' },
+  { icon: '🛡️', title: 'On-ground support', desc: 'Real people in Srinagar ready to help before and during your trip.' },
+];
+
+const promisePoints = [
+  'Transparent planning from the first conversation',
+  'Comfort-focused transport and stays',
+  'Experiences designed for families, couples, and groups',
+];
+
 export default function About() {
+  const heroRef = useRef(null);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -29,22 +45,67 @@ export default function About() {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      if (!heroRef.current) return;
+      const rect = heroRef.current.getBoundingClientRect();
+      setMousePos({
+        x: ((e.clientX - rect.left) / rect.width) * 100,
+        y: ((e.clientY - rect.top) / rect.height) * 100,
+      });
+    };
+
+    const hero = heroRef.current;
+    if (hero) hero.addEventListener('mousemove', handleMouseMove);
+    return () => {
+      if (hero) hero.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, []);
+
   return (
     <main className="about-page" id="about-page">
       {/* Hero */}
-      <section className="about-hero" id="about-hero">
-        <div className="about-hero__bg">
-          <img src="/assets/hero-kashmir.png" alt="Kashmir landscape" className="about-hero__bg-img" />
-          <div className="about-hero__overlay" />
+      <section className="about-hero" id="about-hero" ref={heroRef}>
+        <div
+          className="about-hero__parallax-bg"
+          style={{ transform: `translate(${mousePos.x * 0.02}%, ${mousePos.y * 0.02}%)` }}
+        >
+          <img src="/assets/about-bg.jpg" alt="Kashmir landscape" className="about-hero__bg-img" />
+        </div>
+        <div className="about-hero__overlay" />
+        <div className="about-hero__floating">
+          <span className="about-hero__float about-hero__float--1">🌿</span>
+          <span className="about-hero__float about-hero__float--2">🏔️</span>
+          <span className="about-hero__float about-hero__float--3">✨</span>
         </div>
         <div className="about-hero__content container">
-          <span className="section-label animate-fade-in-up delay-1">✦ Our Story</span>
+          <div className="about-hero__badge animate-fade-in-up delay-1">
+            <span>✦</span> Rooted in Kashmir Since 2005
+          </div>
           <h1 className="about-hero__title heading-display animate-fade-in-up delay-2">
-            About <span className="hero__title-accent">Lal Ded</span>
+            Travel Stories Built<br />
+            Around <span className="about-hero__title-accent">People, Place, and Care</span>
           </h1>
           <p className="about-hero__subtitle animate-fade-in-up delay-3">
-            A journey that started with a love for Kashmir and a commitment to responsible tourism.
+            Lal Ded Tour & Travels creates warm, well-planned Kashmir journeys with local insight,
+            dependable service, and the kind of welcome that turns a trip into a memory.
           </p>
+          <div className="about-hero__stats animate-fade-in-up delay-4">
+            {[
+              { value: '2500+', label: 'Travellers Hosted' },
+              { value: '19+', label: 'Years of Trust' },
+              { value: '4.9★', label: 'Guest Rating' },
+            ].map((stat) => (
+              <div className="about-hero__stat" key={stat.label}>
+                <span className="about-hero__stat-value">{stat.value}</span>
+                <span className="about-hero__stat-label">{stat.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="about-hero__scroll">
+          <span>Scroll to discover</span>
+          <div className="about-hero__scroll-line" />
         </div>
       </section>
 
@@ -54,7 +115,7 @@ export default function About() {
           <div className="about-story__grid">
             <div className="about-story__text">
               <span className="section-label">✦ Who We Are</span>
-              <h2 className="section-title">Your Trusted Partner<br/>in Kashmir Travel</h2>
+              <h2 className="section-title">Your Trusted Partner<br />in Kashmir Travel</h2>
               <div className="section-divider" />
               <p className="about-story__para">
                 At Lal Ded Tour & Travels, we are dedicated to making your travel experiences smooth,
@@ -72,6 +133,14 @@ export default function About() {
                 Lal Ded Tour & Travels is your trusted travel partner. Let us help you discover
                 the charm and beauty of incredible destinations with ease and comfort.
               </p>
+              <div className="about-story__promises">
+                {promisePoints.map((point) => (
+                  <div className="about-story__promise" key={point}>
+                    <span className="about-story__promise-icon">✓</span>
+                    <span>{point}</span>
+                  </div>
+                ))}
+              </div>
             </div>
             <div className="about-story__visual">
               <div className="about-story__image-card glass-card">
@@ -80,6 +149,17 @@ export default function About() {
               <div className="about-story__stat-card glass-card">
                 <span className="about-story__stat-value">19+</span>
                 <span className="about-story__stat-label">Years of Excellence</span>
+              </div>
+              <div className="about-story__highlights">
+                {storyHighlights.map((item) => (
+                  <div className="about-story__highlight glass-card" key={item.title}>
+                    <span className="about-story__highlight-icon">{item.icon}</span>
+                    <div>
+                      <h3>{item.title}</h3>
+                      <p>{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -91,7 +171,10 @@ export default function About() {
         <div className="container">
           <div className="about-timeline__header">
             <span className="section-label">✦ Our Journey</span>
-            <h2 className="section-title">Milestones Along<br/>The Way</h2>
+            <h2 className="section-title">Milestones Along<br />The Way</h2>
+            <p className="section-subtitle">
+              A local travel company shaped by consistency, community ties, and a long love for the valley.
+            </p>
           </div>
           <div className="about-timeline__list">
             {timeline.map((item, i) => (
@@ -116,6 +199,9 @@ export default function About() {
           <div className="about-values__header">
             <span className="section-label">✦ What Drives Us</span>
             <h2 className="section-title">Our Core Values</h2>
+            <p className="section-subtitle">
+              The standards we hold ourselves to every time we plan, host, and support a journey.
+            </p>
           </div>
           <div className="about-values__grid grid grid-4">
             {values.map((v, i) => (
@@ -144,6 +230,19 @@ export default function About() {
                 <span className="about-stats__label">{s.label}</span>
               </div>
             ))}
+          </div>
+          <div className="about-cta glass-card">
+            <div>
+              <span className="section-label">✦ Ready to Travel</span>
+              <h2 className="about-cta__title">Let us design a Kashmir itinerary that feels personal.</h2>
+              <p className="about-cta__desc">
+                Tell us your dates, travel style, and must-see places. We&apos;ll turn that into a thoughtful plan.
+              </p>
+            </div>
+            <div className="about-cta__actions">
+              <Link to="/contact" className="btn btn-primary">Plan My Trip</Link>
+              <Link to="/packages" className="btn btn-secondary">Browse Packages</Link>
+            </div>
           </div>
         </div>
       </section>

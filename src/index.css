@@ -29,6 +29,10 @@
   --on-tertiary: #ffffff;
   --on-tertiary-container: #bfb0a5;
 
+  /* Accents */
+  --accent-saffron: #d89b2b;
+  --accent-emerald: #2f7a56;
+
   /* Text */
   --text-primary: #1b1c1a;
   --text-secondary: #6b5c4c;
@@ -112,6 +116,9 @@
   --tertiary-container: #4d433a;
   --on-tertiary: #2b2520;
   --on-tertiary-container: #e2d5c8;
+
+  --accent-saffron: #f3bf67;
+  --accent-emerald: #7ac19b;
 
   --text-primary: #e0e0dc;
   --text-secondary: #b5a99e;

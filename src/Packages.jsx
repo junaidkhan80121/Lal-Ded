@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import './Packages.css';
 
@@ -145,9 +145,17 @@ const categories = [
   { key: 'pilgrimage', label: 'Pilgrimage' },
 ];
 
+const packagePerks = [
+  { icon: '🚗', title: 'Private transfers', desc: 'Comfortable local transport planned around your itinerary.' },
+  { icon: '🏨', title: 'Trusted stays', desc: 'Handpicked hotels and houseboats with dependable service.' },
+  { icon: '🗺️', title: 'Flexible planning', desc: 'Choose from curated routes or request a custom trip.' },
+];
+
 export default function Packages() {
   const [activeFilter, setActiveFilter] = useState('all');
   const [filtered, setFiltered] = useState(allPackages);
+  const heroRef = useRef(null);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     if (activeFilter === 'all') {
@@ -170,28 +178,98 @@ export default function Packages() {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      if (!heroRef.current) return;
+      const rect = heroRef.current.getBoundingClientRect();
+      setMousePos({
+        x: ((e.clientX - rect.left) / rect.width) * 100,
+        y: ((e.clientY - rect.top) / rect.height) * 100,
+      });
+    };
+
+    const hero = heroRef.current;
+    if (hero) hero.addEventListener('mousemove', handleMouseMove);
+    return () => {
+      if (hero) hero.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, []);
+
   return (
     <main className="packages-page" id="packages-page">
       {/* Hero */}
-      <section className="packages-hero" id="packages-hero">
-        <div className="packages-hero__bg">
-          <img src="/assets/hero-kashmir.png" alt="Kashmir" className="packages-hero__bg-img" />
-          <div className="packages-hero__overlay" />
+      <section className="packages-hero" id="packages-hero" ref={heroRef}>
+        <div
+          className="packages-hero__parallax-bg"
+          style={{ transform: `translate(${mousePos.x * 0.02}%, ${mousePos.y * 0.02}%)` }}
+        >
+          <img src="/assets/travel-bg.jpg" alt="Kashmir" className="packages-hero__bg-img" />
+        </div>
+        <div className="packages-hero__overlay" />
+        <div className="packages-hero__floating">
+          <span className="packages-hero__float packages-hero__float--1">🧳</span>
+          <span className="packages-hero__float packages-hero__float--2">🏔️</span>
+          <span className="packages-hero__float packages-hero__float--3">❄️</span>
         </div>
         <div className="packages-hero__content container">
-          <span className="section-label animate-fade-in-up delay-1">✦ Tour Packages</span>
+          <div className="packages-hero__badge animate-fade-in-up delay-1">
+            <span>✦</span> Curated Kashmir Journeys
+          </div>
           <h1 className="packages-hero__title heading-display animate-fade-in-up delay-2">
-            Explore Our <span className="hero__title-accent">Kashmir Packages</span>
+            Find the <span className="packages-hero__title-accent">Right Package</span><br />
+            for Your Kashmir Escape
           </h1>
           <p className="packages-hero__subtitle animate-fade-in-up delay-3">
-            From snow-capped Gulmarg to the serene Dal Lake — find the perfect journey for your Kashmir dream.
+            From quick scenic getaways to longer adventure circuits, explore thoughtfully designed
+            trips with trusted stays, local guidance, and easy planning.
           </p>
+          <div className="packages-hero__actions animate-fade-in-up delay-4">
+            <a href="#packages-grid-section" className="btn btn-primary">Explore Packages</a>
+            <Link to="/contact" className="btn btn-outline">Request Custom Plan</Link>
+          </div>
+          <div className="packages-hero__stats animate-fade-in-up delay-5">
+            {[
+              { value: '12', label: 'Curated Packages' },
+              { value: '4', label: 'Travel Styles' },
+              { value: '24/7', label: 'Trip Support' },
+            ].map((stat) => (
+              <div className="packages-hero__stat" key={stat.label}>
+                <span className="packages-hero__stat-value">{stat.value}</span>
+                <span className="packages-hero__stat-label">{stat.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="packages-hero__scroll">
+          <span>Scroll to choose</span>
+          <div className="packages-hero__scroll-line" />
         </div>
       </section>
 
       {/* Filters & Grid */}
       <section className="packages-main reveal" id="packages-grid-section">
         <div className="container">
+          <div className="packages-intro">
+            <div className="packages-intro__copy">
+              <span className="section-label">✦ Travel Made Easy</span>
+              <h2 className="section-title">Packages designed with the same polish as the rest of your journey.</h2>
+              <p className="section-subtitle">
+                Filter by travel style, compare highlights, and book the one that fits your pace best.
+              </p>
+            </div>
+            <div className="packages-intro__perks">
+              {packagePerks.map((perk) => (
+                <div className="packages-intro__perk glass-card" key={perk.title}>
+                  <span className="packages-intro__perk-icon">{perk.icon}</span>
+                  <div>
+                    <h3>{perk.title}</h3>
+                    <p>{perk.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
           <div className="packages-filters" id="packages-filters">
             {categories.map((cat) => (
               <button
@@ -218,11 +296,21 @@ export default function Packages() {
                 </div>
                 <div className="pkg-card-full__body">
                   <div className="pkg-card-full__top">
-                    <h3 className="pkg-card-full__title">{pkg.name}</h3>
-                    <span className="pkg-card-full__duration">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                      {pkg.duration}
-                    </span>
+                    <div>
+                      <span className="pkg-card-full__category">{pkg.category}</span>
+                      <h3 className="pkg-card-full__title">{pkg.name}</h3>
+                    </div>
+                    <div className="pkg-card-full__meta">
+                      <span className="pkg-card-full__duration">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        {pkg.duration}
+                      </span>
+                      <div className="pkg-card-full__price-block">
+                        <span className="pkg-card-full__price-label">Starting from</span>
+                        <span className="pkg-card-full__price">{pkg.price}</span>
+                        <span className="pkg-card-full__price-note">per couple</span>
+                      </div>
+                    </div>
                   </div>
                   <ul className="pkg-card-full__highlights">
                     {pkg.highlights.map((h, j) => (
@@ -233,6 +321,7 @@ export default function Packages() {
                     ))}
                   </ul>
                   <div className="pkg-card-full__footer">
+                    <p className="pkg-card-full__footer-copy">Need changes? We can customize this itinerary for dates, stays, and pace.</p>
                     <Link to="/contact" className="btn btn-primary btn-sm">Book Now</Link>
                   </div>
                 </div>
