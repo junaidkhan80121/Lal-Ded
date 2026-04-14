@@ -273,6 +273,54 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── Design Your Own Trip ── */}
+      <section className="custom-trip reveal">
+        <div className="container">
+          <div className="custom-trip__card">
+            <div className="custom-trip__content">
+              <span className="section-label">✦ Design Your Own Trip</span>
+              <h2 className="custom-trip__title heading-display">
+                Build a Kashmir journey around your dates, style, and must-see places.
+              </h2>
+              <p className="custom-trip__desc">
+                Want more time in Gulmarg, a slower houseboat stay, or a family-friendly route with flexible pacing?
+                We can shape the itinerary, stays, transport, and sightseeing around exactly how you want to travel.
+              </p>
+              <div className="custom-trip__points">
+                <div className="custom-trip__point">Custom stays and transport</div>
+                <div className="custom-trip__point">Flexible pacing for families and groups</div>
+                <div className="custom-trip__point">Local guidance for every stop</div>
+              </div>
+              <div className="custom-trip__actions">
+                <Link to="/contact" className="btn btn-primary">
+                  Design My Trip
+                </Link>
+                <Link to="/packages" className="btn btn-secondary">
+                  Start From a Package
+                </Link>
+              </div>
+            </div>
+            <div className="custom-trip__visual">
+              <div className="custom-trip__badge">Made for you</div>
+              <div className="custom-trip__panel glass-card">
+                <div className="custom-trip__panel-row">
+                  <span>Trip Style</span>
+                  <strong>Custom</strong>
+                </div>
+                <div className="custom-trip__panel-row">
+                  <span>Best for</span>
+                  <strong>Couples, families, groups</strong>
+                </div>
+                <div className="custom-trip__panel-row">
+                  <span>You choose</span>
+                  <strong>Dates, stays, pace</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ── Why Choose Us ── */}
       <section className="why-us reveal">
         <div className="container">
@@ -346,7 +394,7 @@ export default function Home() {
             {[
               { value: 50, suffix: '+', label: 'Destinations' },
               { value: 2500, suffix: '+', label: 'Travellers' },
-              { value: 19, suffix: '', label: 'Years Trust' },
+              { value: 2022, suffix: '', label: 'Founded' },
               { value: 98, suffix: '%', label: 'Satisfaction' },
             ].map((stat, i) => (
               <div className="stats__item" key={i}>
