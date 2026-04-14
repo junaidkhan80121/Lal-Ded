@@ -26,7 +26,7 @@ const testimonials = [
 ];
 
 const whyChooseUs = [
-  { icon: '🏆', title: '19+ Years Experience', desc: 'Trusted by thousands since 2005' },
+  { icon: '🏆', title: 'Founded in 2022', desc: 'Building trusted Kashmir journeys since 2022' },
   { icon: '🌍', title: 'Local Expertise', desc: 'Born & raised in Srinagar' },
   { icon: '💰', title: 'Best Price Guarantee', desc: 'Competitive rates, no hidden costs' },
   { icon: '🎯', title: 'Custom Itineraries', desc: 'Tailored to your preferences' },
