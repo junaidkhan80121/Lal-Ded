@@ -17,7 +17,7 @@ export default function Footer() {
             </Link>
             <p className="footer__description">
               Your trusted travel partner for exploring the breathtaking beauty of Kashmir.
-              Creating unforgettable journeys since 2005.
+              Creating unforgettable journeys since 2022.
             </p>
             <div className="footer__socials">
               <a href="https://www.instagram.com/wani_handicrafts" target="_blank" rel="noopener noreferrer" className="footer__social-link" id="footer-instagram" aria-label="Instagram">
