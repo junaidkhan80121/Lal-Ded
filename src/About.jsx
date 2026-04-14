@@ -3,10 +3,10 @@ import { Link } from 'react-router-dom';
 import './About.css';
 
 const timeline = [
-  { year: '2005', title: 'Founded', desc: 'Lal Ded Tour & Travels was born in the heart of Srinagar with a vision to share Kashmir\'s beauty with the world.' },
-  { year: '2010', title: 'Growing Strong', desc: 'Expanded to cover all major Kashmir destinations, building a trusted network of local guides and partners.' },
-  { year: '2018', title: 'Digital Leap', desc: 'Launched online booking and customized tour planning, making it easier than ever to plan a Kashmir trip.' },
-  { year: '2025', title: 'Beyond Kashmir', desc: 'Now offering international partnerships and corporate travel solutions while staying rooted in community tourism.' },
+  { year: '2022', title: 'Founded', desc: 'Lal Ded Tour & Travels began in Srinagar with a vision to share Kashmir\'s beauty through thoughtful, local-first travel experiences.' },
+  { year: '2023', title: 'Growing Strong', desc: 'Expanded across major Kashmir destinations while building a dependable network of drivers, stays, and local guides.' },
+  { year: '2024', title: 'Digital Leap', desc: 'Introduced online inquiries and customized trip planning to make booking more convenient for modern travellers.' },
+  { year: '2025', title: 'Trusted Momentum', desc: 'Continued earning guest trust with personalized itineraries, responsive support, and a stronger presence across the valley.' },
 ];
 
 const values = [
@@ -80,7 +80,7 @@ export default function About() {
         </div>
         <div className="about-hero__content container">
           <div className="about-hero__badge animate-fade-in-up delay-1">
-            <span>✦</span> Rooted in Kashmir Since 2005
+            <span>✦</span> Rooted in Kashmir Since 2022
           </div>
           <h1 className="about-hero__title heading-display animate-fade-in-up delay-2">
             Travel Stories Built<br />
@@ -93,7 +93,7 @@ export default function About() {
           <div className="about-hero__stats animate-fade-in-up delay-4">
             {[
               { value: '2500+', label: 'Travellers Hosted' },
-              { value: '19+', label: 'Years of Trust' },
+              { value: '2022', label: 'Founded' },
               { value: '4.9★', label: 'Guest Rating' },
             ].map((stat) => (
               <div className="about-hero__stat" key={stat.label}>
@@ -147,8 +147,8 @@ export default function About() {
                 <img src="/assets/sonamarg.png" alt="Kashmir beauty" className="about-story__image" />
               </div>
               <div className="about-story__stat-card glass-card">
-                <span className="about-story__stat-value">19+</span>
-                <span className="about-story__stat-label">Years of Excellence</span>
+                <span className="about-story__stat-value">2022</span>
+                <span className="about-story__stat-label">Founded in Srinagar</span>
               </div>
               <div className="about-story__highlights">
                 {storyHighlights.map((item) => (
@@ -222,7 +222,7 @@ export default function About() {
             {[
               { value: '2500+', label: 'Happy Travellers' },
               { value: '50+', label: 'Destinations' },
-              { value: '19+', label: 'Years Active' },
+              { value: '2022', label: 'Founded' },
               { value: '4.9★', label: 'Google Rating' },
             ].map((s, i) => (
               <div className="about-stats__item" key={i}>
