@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import './Navbar.css';
 
 export default function Navbar() {
+  const whatsappUrl = 'https://wa.me/917006267930';
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
@@ -141,9 +142,15 @@ export default function Navbar() {
       </nav>
 
       {/* FAB */}
-      <button className="fab" aria-label="Chat">
+      <a
+        href={whatsappUrl}
+        className="fab"
+        aria-label="Open WhatsApp chat"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         <span className="fab__icon">💬</span>
-      </button>
+      </a>
     </>
   );
 }
