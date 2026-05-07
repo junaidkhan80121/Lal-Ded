@@ -1,14 +1,35 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Admin.css';
+
+const emptyPackageForm = {
+  title: '',
+  description: '',
+  price: '',
+  duration: '',
+  category: 'leisure',
+  imageUrl: '/assets/gulmarg.png',
+  rating: '4.8',
+  popular: false,
+  highlights: '',
+};
 
 const Admin = () => {
   const [secret, setSecret] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [bookings, setBookings] = useState([]);
   const [queries, setQueries] = useState([]);
+  const [packages, setPackages] = useState([]);
+  const [packageForm, setPackageForm] = useState(emptyPackageForm);
+  const [editingPackageId, setEditingPackageId] = useState(null);
   const [error, setError] = useState('');
+  const [packageMessage, setPackageMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isSavingPackage, setIsSavingPackage] = useState(false);
   const [updatingBookingId, setUpdatingBookingId] = useState(null);
+
+  useEffect(() => {
+    if (isAuthenticated) fetchData(secret);
+  }, [isAuthenticated]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -16,9 +37,8 @@ const Admin = () => {
     setError('');
     
     try {
-      // Test the secret by fetching bookings
       const res = await fetch('http://localhost:8000/bookings', {
-        headers: { 'secret': secret }
+        headers: { secret }
       });
       
       if (res.ok) {
@@ -36,19 +56,115 @@ const Admin = () => {
 
   const fetchData = async (validSecret) => {
     try {
-      const [bookingsRes, queriesRes] = await Promise.all([
-        fetch('http://localhost:8000/bookings', { headers: { 'secret': validSecret } }),
-        fetch('http://localhost:8000/queries', { headers: { 'secret': validSecret } })
+      const [packagesRes, bookingsRes, queriesRes] = await Promise.all([
+        fetch('http://localhost:8000/tours', { headers: { secret: validSecret } }),
+        fetch('http://localhost:8000/bookings', { headers: { secret: validSecret } }),
+        fetch('http://localhost:8000/queries', { headers: { secret: validSecret } })
       ]);
 
-      if (bookingsRes.ok && queriesRes.ok) {
-        const bookingsData = await bookingsRes.json();
-        const queriesData = await queriesRes.json();
-        setBookings(bookingsData);
-        setQueries(queriesData);
-      }
+      if (packagesRes.ok) setPackages(await packagesRes.json());
+      if (bookingsRes.ok) setBookings(await bookingsRes.json());
+      if (queriesRes.ok) setQueries(await queriesRes.json());
     } catch (err) {
-      console.error("Error fetching data", err);
+      console.error('Error fetching data', err);
+    }
+  };
+
+  const resetPackageForm = () => {
+    setPackageForm(emptyPackageForm);
+    setEditingPackageId(null);
+    setPackageMessage('');
+  };
+
+  const handlePackageInput = (e) => {
+    const { name, value, type, checked } = e.target;
+    setPackageForm((current) => ({
+      ...current,
+      [name]: type === 'checkbox' ? checked : value,
+    }));
+  };
+
+  const packagePayload = () => ({
+    ...packageForm,
+    price: packageForm.price.trim(),
+    rating: Number(packageForm.rating) || 4.8,
+    highlights: packageForm.highlights
+      .split('\n')
+      .map((item) => item.trim())
+      .filter(Boolean),
+  });
+
+  const handlePackageSubmit = async (e) => {
+    e.preventDefault();
+    setIsSavingPackage(true);
+    setError('');
+    setPackageMessage('');
+
+    try {
+      const isEditing = Boolean(editingPackageId);
+      const res = await fetch(`http://localhost:8000/tours${isEditing ? `/${editingPackageId}` : ''}`, {
+        method: isEditing ? 'PUT' : 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          secret,
+        },
+        body: JSON.stringify(packagePayload()),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.message || 'Failed to save package');
+      }
+
+      await fetchData(secret);
+      resetPackageForm();
+      setPackageMessage(isEditing ? 'Package updated successfully' : 'Package added successfully');
+    } catch (err) {
+      setError(err.message || 'Failed to save package');
+    } finally {
+      setIsSavingPackage(false);
+    }
+  };
+
+  const handleEditPackage = (pkg) => {
+    setEditingPackageId(pkg._id);
+    setPackageMessage('');
+    setPackageForm({
+      title: pkg.title || pkg.name || '',
+      description: pkg.description || '',
+      price: String(pkg.price || ''),
+      duration: pkg.duration || '',
+      category: pkg.category || 'leisure',
+      imageUrl: pkg.imageUrl || pkg.image || '/assets/gulmarg.png',
+      rating: String(pkg.rating || '4.8'),
+      popular: Boolean(pkg.popular),
+      highlights: Array.isArray(pkg.highlights) ? pkg.highlights.join('\n') : '',
+    });
+  };
+
+  const handleDeletePackage = async (packageId) => {
+    const shouldDelete = window.confirm('Delete this package? This cannot be undone.');
+    if (!shouldDelete) return;
+
+    setError('');
+    setPackageMessage('');
+
+    try {
+      const res = await fetch(`http://localhost:8000/tours/${packageId}`, {
+        method: 'DELETE',
+        headers: { secret },
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.message || 'Failed to delete package');
+      }
+
+      setPackages((current) => current.filter((pkg) => pkg._id !== packageId));
+      if (editingPackageId === packageId) resetPackageForm();
+      setPackageMessage('Package deleted successfully');
+    } catch (err) {
+      setError(err.message || 'Failed to delete package');
     }
   };
 
@@ -61,7 +177,7 @@ const Admin = () => {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'secret': secret
+          secret
         },
         body: JSON.stringify({ status: nextStatus })
       });
@@ -88,6 +204,8 @@ const Admin = () => {
     setSecret('');
     setBookings([]);
     setQueries([]);
+    setPackages([]);
+    resetPackageForm();
   };
 
   if (!isAuthenticated) {
@@ -122,6 +240,120 @@ const Admin = () => {
         <div className="admin-header">
           <h1>Admin Dashboard</h1>
           <button className="admin-logout-btn" onClick={handleLogout}>Logout</button>
+        </div>
+
+        {error && <div className="admin-error admin-page-error">{error}</div>}
+
+        <div className="admin-section">
+          <div className="admin-section-header">
+            <div>
+              <h2>Package Management</h2>
+              <p>Add, edit, remove, and price tour packages shown on the Packages page.</p>
+            </div>
+          </div>
+
+          <form className="package-form" onSubmit={handlePackageSubmit}>
+            <div className="package-form-grid">
+              <label>
+                Package Name
+                <input name="title" value={packageForm.title} onChange={handlePackageInput} required />
+              </label>
+              <label>
+                Price
+                <input name="price" value={packageForm.price} onChange={handlePackageInput} placeholder="₹12,999" required />
+              </label>
+              <label>
+                Duration
+                <input name="duration" value={packageForm.duration} onChange={handlePackageInput} placeholder="3 Days / 2 Nights" />
+              </label>
+              <label>
+                Category
+                <select name="category" value={packageForm.category} onChange={handlePackageInput}>
+                  <option value="adventure">Adventure</option>
+                  <option value="leisure">Leisure</option>
+                  <option value="premium">Premium</option>
+                  <option value="pilgrimage">Pilgrimage</option>
+                </select>
+              </label>
+              <label>
+                Image URL
+                <input name="imageUrl" value={packageForm.imageUrl} onChange={handlePackageInput} placeholder="/assets/gulmarg.png" />
+              </label>
+              <label>
+                Rating
+                <input name="rating" type="number" min="1" max="5" step="0.1" value={packageForm.rating} onChange={handlePackageInput} />
+              </label>
+            </div>
+
+            <label className="package-form-wide">
+              Description
+              <textarea name="description" value={packageForm.description} onChange={handlePackageInput} rows="3" />
+            </label>
+
+            <label className="package-form-wide">
+              Highlights (one per line)
+              <textarea name="highlights" value={packageForm.highlights} onChange={handlePackageInput} rows="4" />
+            </label>
+
+            <label className="package-checkbox">
+              <input name="popular" type="checkbox" checked={packageForm.popular} onChange={handlePackageInput} />
+              Mark as popular
+            </label>
+
+            <div className="package-form-actions">
+              <button type="submit" className="admin-btn package-save-btn" disabled={isSavingPackage}>
+                {isSavingPackage ? 'Saving...' : editingPackageId ? 'Update Package' : 'Add Package'}
+              </button>
+              {editingPackageId && (
+                <button type="button" className="admin-secondary-btn" onClick={resetPackageForm}>Cancel Edit</button>
+              )}
+            </div>
+            {packageMessage && <div className="admin-success">{packageMessage}</div>}
+          </form>
+
+          <div className="table-responsive package-table-wrap">
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>Package</th>
+                  <th>Category</th>
+                  <th>Duration</th>
+                  <th>Price</th>
+                  <th>Rating</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {packages.length === 0 ? (
+                  <tr><td colSpan="6" style={{ textAlign: 'center', padding: '30px' }}>No packages found</td></tr>
+                ) : (
+                  packages.map((pkg) => (
+                    <tr key={pkg._id}>
+                      <td>
+                        <div className="package-cell">
+                          <img src={pkg.imageUrl || pkg.image || '/assets/gulmarg.png'} alt="" />
+                          <div>
+                            <strong>{pkg.title || pkg.name}</strong>
+                            {pkg.popular && <span className="popular-chip">Popular</span>}
+                          </div>
+                        </div>
+                      </td>
+                      <td>{pkg.category || 'leisure'}</td>
+                      <td>{pkg.duration || '-'}</td>
+                      <td>{pkg.price || '-'}</td>
+                      <td>{pkg.rating || '-'}</td>
+                      <td>
+                        <div className="booking-actions">
+                          <button type="button" className="booking-action-btn edit" onClick={() => handleEditPackage(pkg)}>Edit</button>
+                          <button type="button" className="booking-action-btn reject" onClick={() => handleDeletePackage(pkg._id)}>Delete</button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
 
         <div className="admin-section">
