@@ -162,6 +162,63 @@ app.get("/queries", async (req, res) => {
         return res.status(500).send({ message: "Internal Server Error" });
     }
 });
+
+// Update Booking Status
+app.put("/bookings/:id", async (req, res) => {
+    try {
+        const collection = req.db.collection("bookings");
+        const { status } = req.body;
+        
+        if (!status) {
+            return res.status(400).send({ message: "Status is required" });
+        }
+        
+        const result = await collection.updateOne(
+            { _id: new ObjectId(req.params.id) },
+            { $set: { status: status } }
+        );
+        
+        if (result.matchedCount === 0) {
+            return res.status(404).send({ message: "Booking not found" });
+        }
+        
+        return res.status(200).send({ message: "Booking status updated" });
+    } catch (err) {
+        return res.status(500).send({ message: "Internal Server Error" });
+    }
+});
+
+// Delete Booking
+app.delete("/bookings/:id", async (req, res) => {
+    try {
+        const collection = req.db.collection("bookings");
+        const result = await collection.deleteOne({ _id: new ObjectId(req.params.id) });
+        
+        if (result.deletedCount === 0) {
+            return res.status(404).send({ message: "Booking not found" });
+        }
+        
+        return res.status(200).send({ message: "Booking deleted" });
+    } catch (err) {
+        return res.status(500).send({ message: "Internal Server Error" });
+    }
+});
+
+// Delete Query
+app.delete("/queries/:id", async (req, res) => {
+    try {
+        const collection = req.db.collection("queries");
+        const result = await collection.deleteOne({ _id: new ObjectId(req.params.id) });
+        
+        if (result.deletedCount === 0) {
+            return res.status(404).send({ message: "Query not found" });
+        }
+        
+        return res.status(200).send({ message: "Query deleted" });
+    } catch (err) {
+        return res.status(500).send({ message: "Internal Server Error" });
+    }
+});
 const startServer = async () => {
     await initDb();
     app.listen(8000, () => {
