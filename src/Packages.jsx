@@ -2,141 +2,6 @@ import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import './Packages.css';
 
-const allPackages = [
-  {
-    id: 1,
-    name: 'Gulmarg Meadows',
-    image: '/assets/gulmarg.png',
-    duration: '3 Days / 2 Nights',
-    price: '₹12,999',
-    category: 'adventure',
-    rating: 4.9,
-    popular: true,
-    highlights: ['Gondola cable car ride', 'Ski slopes & snow activities', 'Strawberry Valley visit', 'Alpine meadow trekking'],
-  },
-  {
-    id: 2,
-    name: 'Sonamarg Golden Valley',
-    image: '/assets/sonamarg.png',
-    duration: '4 Days / 3 Nights',
-    price: '₹15,999',
-    category: 'adventure',
-    rating: 4.8,
-    popular: true,
-    highlights: ['Thajiwas Glacier trek', 'Zero Point excursion', 'River rafting experience', 'Camping under the stars'],
-  },
-  {
-    id: 3,
-    name: 'Pahalgam Riverside',
-    image: '/assets/pahalgam.png',
-    duration: '5 Days / 4 Nights',
-    price: '₹18,999',
-    category: 'premium',
-    rating: 4.9,
-    popular: false,
-    highlights: ['Betaab Valley exploration', 'Lidder River fishing', 'Aru Valley horseback ride', 'Chandanwari snow point'],
-  },
-  {
-    id: 4,
-    name: 'Dal Lake Houseboat',
-    image: '/assets/dal-lake.png',
-    duration: '2 Days / 1 Night',
-    price: '₹8,999',
-    category: 'leisure',
-    rating: 4.7,
-    popular: true,
-    highlights: ['Luxury houseboat stay', 'Shikara sunrise ride', 'Floating market visit', 'Mughal Gardens tour'],
-  },
-  {
-    id: 5,
-    name: 'Yusmarg Alpine Escape',
-    image: '/assets/yusmarg.png',
-    duration: '3 Days / 2 Nights',
-    price: '₹11,999',
-    category: 'leisure',
-    rating: 4.6,
-    popular: false,
-    highlights: ['Doodh Ganga river walk', 'Pine forest meditation', 'Horse riding to Sang Safed', 'Bird watching trails'],
-  },
-  {
-    id: 6,
-    name: 'Doodhpathri Meadows',
-    image: '/assets/doodhpathri.png',
-    duration: '2 Days / 1 Night',
-    price: '₹9,999',
-    category: 'leisure',
-    rating: 4.5,
-    popular: false,
-    highlights: ['Rolling meadow picnics', 'Milky stream walks', 'Photography paradise tour', 'Local shepherd encounters'],
-  },
-  {
-    id: 7,
-    name: 'Srinagar Heritage Tour',
-    image: '/assets/hero-kashmir.png',
-    duration: '3 Days / 2 Nights',
-    price: '₹10,999',
-    category: 'leisure',
-    rating: 4.7,
-    popular: false,
-    highlights: ['Mughal Gardens (Shalimar & Nishat)', 'Old City walking tour', 'Shankaracharya Temple', 'Local handicraft shopping'],
-  },
-  {
-    id: 8,
-    name: 'Gurez Valley Expedition',
-    image: '/assets/sonamarg.png',
-    duration: '5 Days / 4 Nights',
-    price: '₹22,999',
-    category: 'adventure',
-    rating: 4.9,
-    popular: true,
-    highlights: ['Rishu Valley trek', 'Habba Khatoon Village', 'Border area exploration', 'Traditional Dard heritage experience'],
-  },
-  {
-    id: 9,
-    name: 'Katra Vaishno Devi Pilgrimage',
-    image: '/assets/pahalgam.png',
-    duration: '3 Days / 2 Nights',
-    price: '₹14,999',
-    category: 'pilgrimage',
-    rating: 4.8,
-    popular: true,
-    highlights: ['Vaishno Devi Darshan', 'Baba Bhairon Temple', 'Ardhkuwari Cave', 'Sant Nagar Bazaar'],
-  },
-  {
-    id: 10,
-    name: 'Mughal Gardens Escape',
-    image: '/assets/dal-lake.png',
-    duration: '2 Days / 1 Night',
-    price: '₹7,999',
-    category: 'leisure',
-    rating: 4.6,
-    popular: false,
-    highlights: ['Shalimar Bagh', 'Nishat Bagh', 'Pari Mahal visit', 'Evening shikara ride'],
-  },
-  {
-    id: 11,
-    name: 'Aru Valley Retreat',
-    image: '/assets/yusmarg.png',
-    duration: '3 Days / 2 Nights',
-    price: '₹13,999',
-    category: 'premium',
-    rating: 4.7,
-    popular: false,
-    highlights: ['Aru Valley camping', 'Tullian Lake trek', 'Lidder River picnic', 'Local shepherd village visit'],
-  },
-  {
-    id: 12,
-    name: 'Shopian Fruit Valley',
-    image: '/assets/doodhpathri.png',
-    duration: '2 Days / 1 Night',
-    price: '₹8,499',
-    category: 'leisure',
-    rating: 4.5,
-    popular: false,
-    highlights: ['Apple orchard tour', 'Saffron fields visit', 'River Dusso (Duss)' , 'Local cuisine experience'],
-  },
-];
-
 const categories = [
   { key: 'all', label: 'All Packages' },
   { key: 'adventure', label: 'Adventure' },
@@ -151,9 +16,25 @@ const packagePerks = [
   { icon: '🗺️', title: 'Flexible planning', desc: 'Choose from curated routes or request a custom trip.' },
 ];
 
+const normalizePackage = (pkg, index) => ({
+  id: pkg._id || pkg.id || index + 1,
+  dbId: pkg._id,
+  name: pkg.title || pkg.name || 'Untitled Package',
+  image: pkg.imageUrl || pkg.image || '/assets/gulmarg.png',
+  duration: pkg.duration || 'Custom Duration',
+  price: pkg.price || 'On request',
+  category: pkg.category || 'leisure',
+  rating: Number(pkg.rating) || 4.8,
+  popular: Boolean(pkg.popular),
+  highlights: Array.isArray(pkg.highlights) && pkg.highlights.length > 0
+    ? pkg.highlights
+    : ['Custom itinerary planning', 'Trusted local support', 'Flexible travel dates', 'Comfortable transfers'],
+});
+
 export default function Packages() {
   const [activeFilter, setActiveFilter] = useState('all');
-  const [filtered, setFiltered] = useState(allPackages);
+  const [packages, setPackages] = useState([]);
+  const [filtered, setFiltered] = useState([]);
   const heroRef = useRef(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
@@ -166,12 +47,29 @@ export default function Packages() {
   });
 
   useEffect(() => {
+    const loadPackages = async () => {
+      try {
+        const res = await fetch('http://localhost:8000/tours', {
+          headers: { 'secret': '1!xb%C4E7bVa0u&y' }
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        setPackages(Array.isArray(data) ? data.map(normalizePackage) : []);
+      } catch (err) {
+        console.error('Failed to load packages', err);
+      }
+    };
+
+    loadPackages();
+  }, []);
+
+  useEffect(() => {
     if (activeFilter === 'all') {
-      setFiltered(allPackages);
+      setFiltered(packages);
     } else {
-      setFiltered(allPackages.filter((p) => p.category === activeFilter));
+      setFiltered(packages.filter((p) => p.category === activeFilter));
     }
-  }, [activeFilter]);
+  }, [activeFilter, packages]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -232,7 +130,7 @@ export default function Packages() {
           'secret': '1!xb%C4E7bVa0u&y'
         },
         body: JSON.stringify({
-          tourId: selectedPkg.id.toString(),
+          tourId: (selectedPkg.dbId || selectedPkg.id).toString(),
           ...formData
         })
       });
@@ -281,7 +179,7 @@ export default function Packages() {
           </div>
           <div className="packages-hero__stats animate-fade-in-up delay-5">
             {[
-              { value: '12', label: 'Curated Packages' },
+              { value: String(packages.length), label: 'Curated Packages' },
               { value: '4', label: 'Travel Styles' },
               { value: '24/7', label: 'Trip Support' },
             ].map((stat) => (
@@ -353,6 +251,10 @@ export default function Packages() {
                       <h3 className="pkg-card-full__title">{pkg.name}</h3>
                     </div>
                     <div className="pkg-card-full__meta">
+                      <div className="pkg-card-full__price-block">
+                        <span className="pkg-card-full__price-label">From</span>
+                        <span className="pkg-card-full__price">{pkg.price}</span>
+                      </div>
                       <span className="pkg-card-full__duration">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                         {pkg.duration}
