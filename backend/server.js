@@ -123,7 +123,7 @@ app.post("/bookings", async (req, res) => {
         }
         
         const newBooking = {
-            tourId: new ObjectId(tourId),
+            tourId: tourId,
             fname,
             lname,
             email,
