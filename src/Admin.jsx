@@ -14,7 +14,7 @@ const emptyPackageForm = {
 };
 
 const Admin = () => {
-  const [secret, setSecret] = useState('')
+  const [secret, setSecret] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [bookings, setBookings] = useState([]);
   const [queries, setQueries] = useState([]);
