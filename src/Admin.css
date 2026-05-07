@@ -368,3 +368,140 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Theme-aware admin surfaces */
+.admin-container {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.admin-login-card,
+.admin-section {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-md);
+}
+
+.admin-login-card h2,
+.admin-header h1,
+.admin-section h2 {
+  color: var(--text-primary);
+}
+
+.admin-section-header {
+  border-bottom-color: var(--border-subtle);
+}
+
+.admin-section-header p,
+.admin-table th,
+.admin-table td,
+.package-form label,
+.package-form-wide,
+.package-checkbox {
+  color: var(--text-secondary);
+}
+
+.admin-table th {
+  background-color: var(--surface-container-low);
+  color: var(--text-secondary);
+}
+
+.admin-table th,
+.admin-table td {
+  border-bottom-color: var(--border-subtle);
+}
+
+.admin-table tbody tr:hover {
+  background-color: var(--bg-card-hover);
+}
+
+.admin-input,
+.package-form input,
+.package-form select,
+.package-form textarea {
+  background: var(--surface-container-lowest);
+  border-color: var(--border-medium);
+  color: var(--text-primary);
+}
+
+.admin-input::placeholder,
+.package-form input::placeholder,
+.package-form textarea::placeholder {
+  color: var(--text-muted);
+}
+
+.admin-input:focus,
+.package-form input:focus,
+.package-form select:focus,
+.package-form textarea:focus {
+  border-color: var(--border-accent);
+  box-shadow: 0 0 0 3px rgba(173, 207, 180, 0.16);
+}
+
+.admin-btn {
+  background: var(--primary-container);
+  color: var(--on-primary-container);
+}
+
+.admin-btn:hover {
+  background: var(--primary-light);
+}
+
+.admin-secondary-btn {
+  background: var(--surface-container-high);
+  color: var(--text-primary);
+}
+
+.package-form {
+  background: var(--surface-container-low);
+  border-color: var(--border-subtle);
+}
+
+.package-cell img {
+  background: var(--surface-container);
+  border: 1px solid var(--border-subtle);
+}
+
+[data-theme='dark'] .admin-container {
+  background: var(--bg-primary);
+}
+
+[data-theme='dark'] .admin-login-card,
+[data-theme='dark'] .admin-section {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.28);
+}
+
+[data-theme='dark'] .admin-table tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+[data-theme='dark'] .admin-btn {
+  background: var(--primary);
+  color: var(--on-primary);
+}
+
+[data-theme='dark'] .admin-btn:hover {
+  background: var(--on-primary-container);
+}
+
+[data-theme='dark'] .status-badge {
+  background-color: rgba(243, 191, 103, 0.18);
+  color: #f3bf67;
+}
+
+[data-theme='dark'] .status-badge.accepted,
+[data-theme='dark'] .status-badge.confirmed,
+[data-theme='dark'] .admin-success {
+  background-color: rgba(122, 193, 155, 0.18);
+  color: #9fd8b8;
+}
+
+[data-theme='dark'] .status-badge.rejected {
+  background-color: rgba(255, 180, 171, 0.18);
+  color: #ffb4ab;
+}
+
+[data-theme='dark'] .popular-chip {
+  background: rgba(243, 191, 103, 0.18);
+  color: #f3bf67;
+}
