@@ -8,6 +8,7 @@ const Admin = () => {
   const [queries, setQueries] = useState([]);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [updatingBookingId, setUpdatingBookingId] = useState(null);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -48,6 +49,37 @@ const Admin = () => {
       }
     } catch (err) {
       console.error("Error fetching data", err);
+    }
+  };
+
+  const handleBookingStatus = async (bookingId, nextStatus) => {
+    setUpdatingBookingId(bookingId);
+    setError('');
+
+    try {
+      const res = await fetch(`http://localhost:8000/bookings/${bookingId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'secret': secret
+        },
+        body: JSON.stringify({ status: nextStatus })
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.message || 'Failed to update booking');
+      }
+
+      setBookings((currentBookings) =>
+        currentBookings.map((booking) =>
+          booking._id === bookingId ? { ...booking, status: nextStatus } : booking
+        )
+      );
+    } catch (err) {
+      setError(err.message || 'Failed to update booking');
+    } finally {
+      setUpdatingBookingId(null);
     }
   };
 
@@ -105,11 +137,12 @@ const Admin = () => {
                   <th>Tour ID</th>
                   <th>People</th>
                   <th>Status</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {bookings.length === 0 ? (
-                  <tr><td colSpan="7" style={{textAlign: 'center', padding: '30px'}}>No bookings found</td></tr>
+                  <tr><td colSpan="8" style={{textAlign: 'center', padding: '30px'}}>No bookings found</td></tr>
                 ) : (
                   bookings.map((b) => (
                     <tr key={b._id}>
@@ -119,7 +152,27 @@ const Admin = () => {
                       <td>{b.phone}</td>
                       <td>{b.tourId}</td>
                       <td>{b.numberOfPeople}</td>
-                      <td><span className="status-badge">{b.status}</span></td>
+                      <td><span className={`status-badge ${(b.status || '').toLowerCase()}`}>{b.status}</span></td>
+                      <td>
+                        <div className="booking-actions">
+                          <button
+                            type="button"
+                            className="booking-action-btn accept"
+                            onClick={() => handleBookingStatus(b._id, 'Accepted')}
+                            disabled={updatingBookingId === b._id || b.status === 'Accepted'}
+                          >
+                            Accept
+                          </button>
+                          <button
+                            type="button"
+                            className="booking-action-btn reject"
+                            onClick={() => handleBookingStatus(b._id, 'Rejected')}
+                            disabled={updatingBookingId === b._id || b.status === 'Rejected'}
+                          >
+                            Reject
+                          </button>
+                        </div>
+                      </td>
                     </tr>
                   ))
                 )}
