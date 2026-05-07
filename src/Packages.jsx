@@ -157,6 +157,14 @@ export default function Packages() {
   const heroRef = useRef(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
+  // Modal State
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedPkg, setSelectedPkg] = useState(null);
+  const [submitStatus, setSubmitStatus] = useState('idle');
+  const [formData, setFormData] = useState({
+    fname: '', lname: '', email: '', phone: '', date: '', numberOfPeople: 1
+  });
+
   useEffect(() => {
     if (activeFilter === 'all') {
       setFiltered(allPackages);
@@ -194,6 +202,50 @@ export default function Packages() {
       if (hero) hero.removeEventListener('mousemove', handleMouseMove);
     };
   }, []);
+
+  const handleBookClick = (pkg) => {
+    setSelectedPkg(pkg);
+    setIsModalOpen(true);
+    setSubmitStatus('idle');
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    setTimeout(() => {
+      setSelectedPkg(null);
+      setFormData({ fname: '', lname: '', email: '', phone: '', date: '', numberOfPeople: 1 });
+    }, 300);
+  };
+
+  const handleInputChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleBookingSubmit = async (e) => {
+    e.preventDefault();
+    setSubmitStatus('loading');
+    try {
+      const res = await fetch('http://localhost:8000/bookings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'secret': '1!xb%C4E7bVa0u&y'
+        },
+        body: JSON.stringify({
+          tourId: selectedPkg.id.toString(),
+          ...formData
+        })
+      });
+
+      if (res.ok) {
+        setSubmitStatus('success');
+      } else {
+        setSubmitStatus('error');
+      }
+    } catch (err) {
+      setSubmitStatus('error');
+    }
+  };
 
   return (
     <main className="packages-page" id="packages-page">
@@ -317,7 +369,7 @@ export default function Packages() {
                   </ul>
                   <div className="pkg-card-full__footer">
                     <p className="pkg-card-full__footer-copy">Need changes? We can customize this itinerary for dates, stays, and pace.</p>
-                    <Link to="/contact" className="btn btn-primary btn-sm">Book Now</Link>
+                    <button onClick={() => handleBookClick(pkg)} className="btn btn-primary btn-sm">Book Now</button>
                   </div>
                 </div>
               </div>
@@ -331,6 +383,72 @@ export default function Packages() {
           )}
         </div>
       </section>
+
+      {/* Booking Modal */}
+      {isModalOpen && (
+        <div className="modal-overlay" onClick={handleModalClose}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <button className="modal-close" onClick={handleModalClose}>&times;</button>
+            
+            {submitStatus === 'success' ? (
+              <div className="modal-success">
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+                <h3>Booking Requested!</h3>
+                <p>We've received your request for <strong>{selectedPkg?.name}</strong>. Our team will contact you shortly to confirm the details.</p>
+                <button className="btn btn-primary" onClick={handleModalClose}>Close</button>
+              </div>
+            ) : (
+              <>
+                <h2>Book {selectedPkg?.name}</h2>
+                <form onSubmit={handleBookingSubmit}>
+                  <div style={{display: 'flex', gap: '15px'}}>
+                    <div className="modal-form-group" style={{flex: 1}}>
+                      <label>First Name</label>
+                      <input type="text" name="fname" className="modal-input" required value={formData.fname} onChange={handleInputChange} />
+                    </div>
+                    <div className="modal-form-group" style={{flex: 1}}>
+                      <label>Last Name</label>
+                      <input type="text" name="lname" className="modal-input" required value={formData.lname} onChange={handleInputChange} />
+                    </div>
+                  </div>
+                  
+                  <div className="modal-form-group">
+                    <label>Email Address</label>
+                    <input type="email" name="email" className="modal-input" required value={formData.email} onChange={handleInputChange} />
+                  </div>
+                  
+                  <div className="modal-form-group">
+                    <label>Phone Number</label>
+                    <input type="tel" name="phone" className="modal-input" required value={formData.phone} onChange={handleInputChange} />
+                  </div>
+                  
+                  <div style={{display: 'flex', gap: '15px'}}>
+                    <div className="modal-form-group" style={{flex: 1}}>
+                      <label>Travel Date</label>
+                      <input type="date" name="date" className="modal-input" required value={formData.date} onChange={handleInputChange} />
+                    </div>
+                    <div className="modal-form-group" style={{flex: 1}}>
+                      <label>Number of People</label>
+                      <input type="number" name="numberOfPeople" className="modal-input" min="1" required value={formData.numberOfPeople} onChange={handleInputChange} />
+                    </div>
+                  </div>
+
+                  {submitStatus === 'error' && (
+                    <p style={{color: 'red', fontSize: '14px', marginBottom: '10px'}}>Something went wrong. Please try again.</p>
+                  )}
+                  
+                  <button type="submit" className="modal-submit-btn" disabled={submitStatus === 'loading'}>
+                    {submitStatus === 'loading' ? 'Submitting...' : 'Request Booking'}
+                  </button>
+                </form>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </main>
   );
 }
