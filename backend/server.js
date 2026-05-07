@@ -93,20 +93,74 @@ app.get("/tours/:id", async (req, res) => {
     }
 });
 
+const buildTourPayload = (body) => {
+    const title = (body.title || body.name || "").trim();
+    const description = (body.description || "").trim();
+    const price = String(body.price || "").trim();
+    const duration = (body.duration || "").trim();
+    const category = (body.category || "leisure").trim();
+    const imageUrl = (body.imageUrl || body.image || "").trim();
+    const rating = Number(body.rating) || 4.8;
+    const popular = Boolean(body.popular);
+    const highlights = Array.isArray(body.highlights)
+        ? body.highlights.map((item) => String(item).trim()).filter(Boolean)
+        : [];
+
+    return { title, description, price, duration, category, imageUrl, rating, popular, highlights };
+};
+
 app.post("/tours", async (req, res) => {
     try {
         const collection = req.db.collection("tours");
-        // Example payload: { title: "Pahalgam Trip", description: "...", price: 1500, duration: "3 Days" }
-        const { title, description, price, duration, imageUrl } = req.body;
+        const payload = buildTourPayload(req.body);
         
-        if (!title || !description || !price) {
-            return res.status(400).send({ message: "Missing required fields" });
+        if (!payload.title || !payload.price) {
+            return res.status(400).send({ message: "Package name and price are required" });
         }
         
-        const newTour = { title, description, price, duration, imageUrl, createdAt: new Date() };
+        const newTour = { ...payload, createdAt: new Date(), updatedAt: new Date() };
         const result = await collection.insertOne(newTour);
         
         return res.status(201).send({ message: "Tour added successfully", tourId: result.insertedId });
+    } catch (err) {
+        return res.status(500).send({ message: "Internal Server Error" });
+    }
+});
+
+app.put("/tours/:id", async (req, res) => {
+    try {
+        const collection = req.db.collection("tours");
+        const payload = buildTourPayload(req.body);
+
+        if (!payload.title || !payload.price) {
+            return res.status(400).send({ message: "Package name and price are required" });
+        }
+
+        const result = await collection.updateOne(
+            { _id: new ObjectId(req.params.id) },
+            { $set: { ...payload, updatedAt: new Date() } }
+        );
+
+        if (result.matchedCount === 0) {
+            return res.status(404).send({ message: "Tour not found" });
+        }
+
+        return res.status(200).send({ message: "Tour updated successfully" });
+    } catch (err) {
+        return res.status(500).send({ message: "Internal Server Error" });
+    }
+});
+
+app.delete("/tours/:id", async (req, res) => {
+    try {
+        const collection = req.db.collection("tours");
+        const result = await collection.deleteOne({ _id: new ObjectId(req.params.id) });
+
+        if (result.deletedCount === 0) {
+            return res.status(404).send({ message: "Tour not found" });
+        }
+
+        return res.status(200).send({ message: "Tour deleted successfully" });
     } catch (err) {
         return res.status(500).send({ message: "Internal Server Error" });
     }
