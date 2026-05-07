@@ -159,9 +159,54 @@
   color: #856404;
 }
 
+.status-badge.accepted,
 .status-badge.confirmed {
   background-color: #d4edda;
   color: #155724;
+}
+
+.status-badge.rejected {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.booking-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.booking-action-btn {
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 8px 12px;
+  transition: opacity 0.2s, transform 0.1s;
+}
+
+.booking-action-btn.accept {
+  background-color: #198754;
+}
+
+.booking-action-btn.reject {
+  background-color: #dc3545;
+}
+
+.booking-action-btn:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.booking-action-btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.booking-action-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 
 @keyframes fadeIn {
